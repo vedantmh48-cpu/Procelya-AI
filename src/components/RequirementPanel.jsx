@@ -1,0 +1,3 @@
+import { Sparkles, LoaderCircle } from 'lucide-react'
+import Panel from './Panel'
+export default function RequirementPanel({ value, onChange, detecting, onDetect }){return <Panel eyebrow="STEP 01" title="Describe your business requirement" subtitle="Tell Procelya AI what should happen in plain English." className="requirement"><textarea value={value} onChange={e=>onChange(e.target.value)} rows="5"/><footer><span><Sparkles size={15}/> AI will detect triggers, actions and conditions</span><button className="flame-btn" onClick={onDetect} disabled={detecting}>{detecting?<><LoaderCircle className="spin" size={16}/>Detecting…</>:<><Sparkles size={16}/>Detect Workflow</>}</button></footer></Panel>}

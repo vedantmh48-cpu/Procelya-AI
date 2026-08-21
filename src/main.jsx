@@ -1,0 +1,12 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import './dashboard.css'
+import './light.css'
+import './mobile.css'
+import './phone.css'
+import './auth.css'
+import App from './App'
+import { AuthProvider } from './context/AuthContext'
+import { HealthProvider } from './context/HealthContext'
+createRoot(document.getElementById('root')).render(<StrictMode><AuthProvider><HealthProvider><App /></HealthProvider></AuthProvider></StrictMode>)

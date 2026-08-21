@@ -1,0 +1,111 @@
+body.light{background:#f5f5f2;color:#191b23}body.light .sidebar,body.light .topbar{background:#fff;border-color:#deded8}body.light .panel{background:#fff;border-color:#deded8;box-shadow:0 5px 20px #201c1209}body.light .panel h2,body.light .wordmark span,body.light .crumbs b,body.light .project,body.light .user,body.light .user strong{color:#191b23}body.light .nav-item{color:#6b6c72}body.light .nav-item:hover,body.light .nav-item.active{background:#fff3e8;color:#191b23}body.light .requirement textarea,body.light .trigger,body.light .step-chip,body.light .trigger-panel input,body.light .trigger-panel select,body.light .icon-btn,body.light .ghost,body.light .project,body.light .flow-wrap{background:#f8f8f6;border-color:#deded8;color:#34353b}body.light .flow-node{background:#fff;color:#191b23;border-color:#cacac2;box-shadow:0 6px 15px #00000012}body.light .react-flow__controls-button{background:#fff!important;border-color:#deded8!important;fill:#191b23!important}body.light .execution td{border-color:#e7e7e1;color:#45464d}body.light .side-bottom{border-color:#deded8}.selected{border-color:#ff6a1a!important;color:#ff8a3d!important}.json-modal{position:absolute;z-index:10;inset:0;background:#08090ccc;display:grid;place-items:center;padding:20px}.json-modal>div{position:relative;width:min(520px,100%);max-height:85%;overflow:auto;background:#191b23;border:1px solid #3b3d45;border-radius:7px;padding:20px}.json-modal h3{font:600 16px 'Space Grotesk';margin:0 0 12px}.json-modal pre{margin:0;color:#d6d8df;font:11px/1.65 'JetBrains Mono';white-space:pre-wrap}.json-close{position:absolute;right:12px;top:10px}body.light .json-modal{background:#f5f5f2cc}body.light .json-modal>div{background:#fff;border-color:#deded8}body.light .json-modal pre{color:#34353b}
+/* Light mode for new elements */
+body.light .crumb-btn{color:#6b6c72}body.light .crumb-btn:hover{color:#ff8a3d;background:#fff3e8}
+body.light .search-input{background:#f8f8f6;border-color:#deded8;color:#34353b}
+body.light .project-menu,body.light .user-menu{background:#fff;border-color:#deded8;box-shadow:0 12px 32px #201c120f}
+body.light .project-menu button,body.light .user-menu button{color:#6b6c72}
+body.light .project-menu button:hover,body.light .user-menu button:hover{background:#f8f8f6;color:#191b23}
+body.light .project-menu button.active{color:#ff8a3d;background:#fff3e8}
+body.light .system-toggle{background:#34d39920;color:#0a8f5c}
+body.light .toast{background:#fff;color:#191b23;border-color:#34d39940;box-shadow:0 18px 40px #201c1218}
+body.light .toast.error{border-color:#ff6b6b40;border-left-color:#ff6b6b}
+body.light .toast.info{border-color:#7c93ff40;border-left-color:#7c93ff}
+body.light .payload-preview{background:#f8f8f6;border-color:#deded8}
+body.light .payload-preview pre{color:#45464d}
+body.light .trigger-meta span{background:#f8f8f6;border-color:#e7e7e1;color:#8a8d99}
+body.light .status-icon{background:#f8f8f6;color:#8a8d99}
+body.light .status-icon.done{background:#34d39914;color:#0a8a5c}
+body.light .status-icon.running{background:#ffb23814;color:#d97706}
+body.light .status-icon.stopped,body.light .status-icon.paused{background:#ff6b6b12;color:#dc2626}
+body.light .status dl div{border-color:#e7e7e1}
+body.light .status dd{color:#191b23}
+body.light .diagram.fullscreen{background:#fff}
+body.light .danger{color:#dc2626!important;border-color:#ff6b6b40!important}
+body.light .danger:hover{background:#ff6b6b0d!important}
+/* Dashboard light mode */
+body.light .dash-head h1{color:#191b23}
+body.light .stat-card{background:#fff;border-color:#deded8}
+body.light .stat-value{color:#191b23}
+body.light .flow-row{background:#f8f8f6;border-color:#deded8}
+body.light .flow-main strong{color:#191b23}
+body.light .progress{background:#e7e7e1}
+body.light .activity-row{border-color:#e7e7e1}
+body.light .activity-row strong{color:#191b23}
+body.light .quick-btn{background:#f8f8f6;border-color:#deded8}
+body.light .quick-btn strong{color:#191b23}
+body.light .system-health{background:#34d3990d;border-color:#34d39920}
+body.light .system-health strong{color:#191b23}
+/* View pages light mode */
+body.light .search-box{background:#f8f8f6;border-color:#deded8}
+body.light .search-box input{color:#34353b}
+body.light .filter-tabs{background:#fff;border-color:#deded8}
+body.light .filter-tabs button{color:#6b6c72}
+body.light .filter-tabs button:hover{color:#191b23}
+body.light .filter-tabs button.active{background:#fff3e8;color:#ff8a3d}
+/* Workflow cards light */
+body.light .wf-card{background:#fff;border-color:#deded8}
+body.light .wf-card h3{color:#191b23}
+body.light .wf-stats{border-color:#e7e7e1}
+body.light .wf-stats strong{color:#191b23}
+body.light .wf-menu{background:#fff;border-color:#deded8;box-shadow:0 12px 32px #201c120f}
+body.light .wf-menu button{color:#6b6c72}
+body.light .wf-menu button:hover{background:#f8f8f6;color:#191b23}
+/* Executions light */
+body.light .exec-table th{border-color:#e7e7e1}
+body.light .exec-table td{border-color:#e7e7e1;color:#45464d}
+body.light .exec-row:hover{background:#f8f8f6}
+body.light .exec-row.expanded{background:#f8f8f6}
+body.light .exec-expand td{background:#f8f8f6;border-color:#deded8}
+body.light .detail-grid strong{color:#191b23}
+/* Functions light */
+body.light .func-card{background:#fff;border-color:#deded8}
+body.light .func-body h3{color:#191b23}
+body.light .chip{background:#f8f8f6;border-color:#deded8;color:#6b6c72}
+/* Projects light */
+body.light .project-card{background:#fff;border-color:#deded8}
+body.light .proj-head h3{color:#191b23}
+body.light .proj-meta span{color:#6b6c72}
+body.light .proj-foot{border-color:#e7e7e1}
+body.light .proj-status{background:#f8f8f6;color:#6b6c72}
+body.light .proj-menu{background:#fff;border-color:#deded8;box-shadow:0 12px 32px #201c120f}
+body.light .proj-menu button{color:#6b6c72}
+body.light .proj-menu button:hover{background:#f8f8f6;color:#191b23}
+/* Settings light */
+body.light .settings-nav{background:#fff;border-color:#deded8}
+body.light .settings-nav button{color:#6b6c72}
+body.light .settings-nav button:hover{color:#191b23;background:#f8f8f6}
+body.light .settings-nav button.active{background:#fff3e8;color:#ff8a3d}
+body.light .settings-content{background:#fff;border-color:#deded8}
+body.light .settings-section h3{color:#191b23}
+body.light .form-grid input{background:#f8f8f6;border-color:#deded8;color:#34353b}
+body.light .theme-option{background:#f8f8f6;border-color:#deded8}
+body.light .theme-option strong{color:#191b23}
+body.light .toggle-row{border-color:#e7e7e1}
+body.light .toggle-row strong{color:#191b23}
+body.light .toggle{background:#e7e7e1}
+body.light .toggle-row select{background:#f8f8f6;border-color:#deded8;color:#34353b}
+body.light .billing-card{background:#f8f8f6;border-color:#deded8}
+body.light .billing-card small{color:#191b23}
+/* API Keys light */
+body.light .api-key-row{border-color:#e7e7e1}
+body.light .api-key-info strong{color:#191b23}
+body.light .api-key-value code{background:#f8f8f6;border-color:#deded8;color:#4a5a8a}
+body.light .api-usage strong{color:#191b23}
+/* Auth page light mode */
+body.light .auth-page{background:#f5f5f2}
+body.light .auth-card{background:#fff;border-color:#deded8;box-shadow:0 30px 80px #201c1218}
+body.light .auth-brand h1{color:#191b23}
+body.light .auth-tabs{background:#f8f8f6;border-color:#deded8}
+body.light .auth-tabs button{color:#6b6c72}
+body.light .auth-field input{background:#f8f8f6;border-color:#deded8;color:#34353b}
+body.light .auth-field input::placeholder{color:#8a8d99}
+body.light .auth-field label{color:#6b6c72}
+body.light .auth-check{color:#6b6c72}
+body.light .auth-demo{background:#f8f8f6;border-color:#deded8;color:#6b6c72}
+body.light .auth-footer{color:#8a8d99}
+body.light .auth-error{background:#ff6b6b0d;border-color:#ff6b6b30;color:#dc2626}
+body.light .auth-divider{color:#8a8d99}
+body.light .auth-divider::before,body.light .auth-divider::after{background:#e7e7e1}
+body.light .auth-strength span{background:#e7e7e1}
+body.light .auth-password-toggle{color:#8a8d99}
+body.light .auth-password-toggle:hover{color:#ff8a3d}
