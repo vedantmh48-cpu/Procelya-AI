@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AlertCircle, Eye, EyeOff, Loader2, Lock, Mail, User, Zap, CheckCircle2 } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext'
 import { useContext } from 'react'
+import logo from '../../logo.png'
 
 export default function AuthPage() {
   const { login, register } = useContext(AuthContext)
@@ -96,7 +97,7 @@ export default function AuthPage() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-brand">
-          <img src="/logo.png" alt="Procelya AI" />
+          <img src={logo} alt="Procelya AI" />
           <div>
             <h1>Procelya AI</h1>
             <p>Intelligent Workflow Automation Platform</p>

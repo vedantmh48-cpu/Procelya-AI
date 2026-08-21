@@ -1,4 +1,5 @@
 import { Workflow, Network, PlaySquare, FolderKanban, Settings, LayoutDashboard, Bell, LogOut } from 'lucide-react'
+import logo from '../../logo.png'
 const items = [
   [LayoutDashboard, 'Dashboard', 'Dashboard'],
   [Workflow, 'Builder', 'Workflow Builder'],
@@ -26,7 +27,7 @@ export default function MobileNav({ active, onChange, onLogout }) {
   }
   return <nav className="mobile-nav" aria-label="Mobile navigation">
     <div className="mobile-nav-brand">
-      <img src="/logo.png" alt="Procelya AI" />
+      <img src={logo} alt="Procelya AI" />
     </div>
     <div className="mobile-nav-items">
       {items.map(([Icon, label, view]) => (

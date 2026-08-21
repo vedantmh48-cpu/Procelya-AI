@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { LayoutDashboard, Workflow, Network, PlaySquare, Braces, FolderKanban, Settings, KeyRound, Bell, ChevronDown, User, LogOut } from 'lucide-react'
+import logo from '../../logo.png'
 
 const nav = [
   [LayoutDashboard, 'Dashboard'],
@@ -20,7 +21,7 @@ export default function Sidebar({ activeNav, onNav, onUserAction, userMenu, setU
   const role = user?.role || 'Admin'
   return <aside className="sidebar">
     <div className="brand brand-img" style={{ background: '#fff', borderRadius: '8px', margin: '12px 16px', padding: '10px', height: 'auto', border: '1px solid #e5e5e5' }}>
-      <img src="/logo.png" alt="Procelya AI logo" className="brand-logo" style={{ maxHeight: '40px' }}/>
+      <img src={logo} alt="Procelya AI logo" className="brand-logo" style={{ maxHeight: '40px' }}/>
     </div>
     <nav>
       {nav.map(([Icon, label], i) => (
