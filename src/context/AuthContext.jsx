@@ -27,7 +27,16 @@ function getUsers() {
         password: hashPassword('admin123'),
         role: 'Admin',
         createdAt: new Date().toISOString(),
-        initials: 'VM'
+        initials: 'VM',
+        businessSetup: true,
+        business: {
+          name: 'Procelya AI',
+          industry: 'Technology',
+          size: '11-50',
+          website: 'https://procelya.ai',
+          country: 'India',
+          phone: '+91 98765 43210'
+        }
       }
       users.push(demo)
       saveUsers(users)
@@ -66,11 +75,13 @@ export function AuthProvider({ children }) {
       password: hashPassword(password),
       role: 'Admin',
       createdAt: new Date().toISOString(),
-      initials: name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+      initials: name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
+      businessSetup: false,
+      business: null
     }
     users.push(newUser)
     saveUsers(users)
-    const session = { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, initials: newUser.initials }
+    const session = { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, initials: newUser.initials, businessSetup: false, business: null }
     localStorage.setItem(SESSION_KEY, JSON.stringify(session))
     setUser(session)
     return { success: true }
@@ -83,7 +94,7 @@ export function AuthProvider({ children }) {
     if (found.password !== hashPassword(password)) {
       return { error: 'Incorrect password. Please try again' }
     }
-    const session = { id: found.id, name: found.name, email: found.email, role: found.role, initials: found.initials }
+    const session = { id: found.id, name: found.name, email: found.email, role: found.role, initials: found.initials, businessSetup: found.businessSetup, business: found.business }
     localStorage.setItem(SESSION_KEY, JSON.stringify(session))
     setUser(session)
     return { success: true }
@@ -107,6 +118,29 @@ export function AuthProvider({ children }) {
     setUser(session)
   }
 
+  const completeBusinessSetup = (businessData) => {
+    if (!user) return { error: 'Not authenticated' }
+    const users = getUsers()
+    const idx = users.findIndex(u => u.id === user.id)
+    if (idx === -1) return { error: 'User not found' }
+    const business = {
+      name: businessData.name?.trim(),
+      industry: businessData.industry,
+      size: businessData.size,
+      website: businessData.website?.trim() || '',
+      country: businessData.country,
+      phone: businessData.phone?.trim() || '',
+      address: businessData.address?.trim() || '',
+      description: businessData.description?.trim() || ''
+    }
+    users[idx] = { ...users[idx], businessSetup: true, business }
+    saveUsers(users)
+    const session = { ...user, businessSetup: true, business }
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session))
+    setUser(session)
+    return { success: true }
+  }
+
   const changePassword = (currentPassword, newPassword) => {
     if (!user) return { error: 'Not authenticated' }
     const users = getUsers()
@@ -124,7 +158,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login: loginWithEmail, register, logout, updateProfile, changePassword }}>
+    <AuthContext.Provider value={{ user, loading, login: loginWithEmail, register, logout, updateProfile, changePassword, completeBusinessSetup }}>
       {children}
     </AuthContext.Provider>
   )

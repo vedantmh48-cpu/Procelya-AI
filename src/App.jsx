@@ -12,6 +12,7 @@ import SettingsView from './views/SettingsView'
 import APIKeysView from './views/APIKeysView'
 import NotificationsView from './views/NotificationsView'
 import AuthPage from './pages/AuthPage'
+import BusinessAuthPage from './pages/BusinessAuthPage'
 import { AuthContext } from './context/AuthContext'
 import { HealthContext } from './context/HealthContext'
 import api from './api/client'
@@ -62,7 +63,7 @@ export default function App() {
   const [projectMenu, setProjectMenu] = useState(false)
   const [userMenu, setUserMenu] = useState(false)
   const [toast, setToast] = useState(null)
-  const [payload, setPayload] = useState({ orderId: 'ORD-2026-014', customerId: 'CUS-1108', stockType: 'physical' })
+  const [payload, setPayload] = useState({ orderId: 'ORD-2026-014', customerId: 'CUS-1108', vendorId: 'VND-001', vendorName: 'Acme Supplies', stockType: 'physical', quantity: 1, deliveryMethod: 'standard', amount: 2499, currency: 'INR', paymentType: 'card', paymentStatus: 'received' })
   const toastTimer = useRef(null)
   const eventSourceRef = useRef(null)
 
@@ -178,8 +179,14 @@ export default function App() {
     setRun({ status: 'running', started: Date.now() })
     try {
       const triggerPayload = {
-        order: { id: payload.orderId, customer_id: payload.customerId },
-        stock_type: payload.stockType
+        order: { id: payload.orderId, customer_id: payload.customerId, vendor_id: payload.vendorId, vendor_name: payload.vendorName },
+        stock_type: payload.stockType,
+        quantity: Number(payload.quantity) || 0,
+        delivery_method: payload.deliveryMethod,
+        amount: Number(payload.amount) || 0,
+        currency: payload.currency,
+        payment_type: payload.paymentType,
+        payment_status: payload.paymentStatus
       }
       const result = await api.triggerWorkflow(workflowId, triggerPayload)
       setRunId(result.runId)
@@ -314,7 +321,6 @@ export default function App() {
 
     const steps = workflow.steps || []
     steps.forEach((step, i) => {
-      // Check page break
       if (y > 270) {
         doc.addPage()
         y = 20
@@ -345,7 +351,6 @@ export default function App() {
         y += lines.length * 4 + 1
       })
 
-      // Input mapping
       if (step.inputMapping && Object.keys(step.inputMapping).length) {
         const mappingLines = doc.splitTextToSize(`Input Mapping: ${JSON.stringify(step.inputMapping)}`, pageWidth - margin * 2)
         doc.text(mappingLines, margin + 4, y)
@@ -395,6 +400,8 @@ export default function App() {
   }
 
   const handleLogout = () => {
+    eventSourceRef.current?.close()
+    eventSourceRef.current = null
     logout()
     showToast('Logged out successfully', 'info')
   }
@@ -402,7 +409,7 @@ export default function App() {
   // Mobile Nav
   const handleMobileNav = (label) => {
     setMobileTab(label)
-    const map = { Dashboard: 'Dashboard', Builder: 'Workflow Builder', Flows: 'Workflows', Runs: 'Executions', Projects: 'Projects', Alerts: 'Notifications', Settings: 'Settings' }
+    const map = { Dashboard: 'Dashboard', Builder: 'Workflow Builder', Flows: 'Workflows', Runs: 'Executions', Functions: 'Functions', Projects: 'Projects', Alerts: 'Notifications', Settings: 'Settings', 'API Keys': 'API Keys' }
     navigate(map[label])
   }
 
@@ -425,7 +432,11 @@ export default function App() {
     return <AuthPage />
   }
 
-  return <div className="app">
+  if (!user.businessSetup) {
+    return <BusinessAuthPage />
+  }
+
+  return <div className="app" key={user.id}>
     <Sidebar activeNav={activeNav} onNav={handleNav} onUserAction={handleUserAction} userMenu={userMenu} setUserMenu={setUserMenu} user={user} health={health} />
     <main>
       <TopBar
@@ -441,6 +452,31 @@ export default function App() {
         onLogout={handleLogout}
         health={health}
       />
+
+      {/* Mobile-only app bar */}
+      <div className="mobile-topbar">
+        <div className="mobile-topbar-brand">
+          <span className="mobile-topbar-mark">P</span>
+          <div className="mobile-topbar-meta">
+            <strong>{VIEW_LABELS[activeNav] || activeNav}</strong>
+            <small>Procelya AI</small>
+          </div>
+        </div>
+        <div className="mobile-topbar-actions">
+          <span className={`mobile-health ${health?.backend ? 'ok' : 'bad'}`}>
+            <em />
+            {health?.backend ? 'Live' : 'Offline'}
+          </span>
+          <button
+            className="mobile-theme"
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            onClick={() => handleThemeToggle()}
+          >
+            {theme === 'dark' ? '☀' : '☾'}
+          </button>
+        </div>
+      </div>
+
       <div className="content">
         {ViewComponent === BuilderView
           ? <BuilderView

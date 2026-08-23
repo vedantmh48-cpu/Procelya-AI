@@ -56,7 +56,7 @@ export default function DashboardView({ onNavigate, user }) {
   return <div className="dashboard">
     <div className="dash-head">
       <div>
-        <h1>Dashboard</h1>
+        <h1 data-mobile-welcome={`Welcome back, ${user?.name?.split(' ')[0] || 'there'}`}>Dashboard</h1>
         <p>Welcome back, {user?.name?.split(' ')[0] || 'there'}. Here's what's happening with your workflows.</p>
       </div>
       <button className="flame-btn" onClick={() => onNavigate('Workflow Builder')}><Zap size={15}/>New Workflow</button>

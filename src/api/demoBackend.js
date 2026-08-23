@@ -1,20 +1,63 @@
 // Demo backend simulator.
 // Used when the real backend is unreachable, so the demo webpage works standalone.
 // Simulates the same API contract as the real backend.
+//
+// Data is persisted per user in localStorage, keyed by the session user id:
+//   · Refresh-safe — workflows / runs / notifications survive reloads.
+//   · User-isolated — each logged-in email gets their own empty store
+//     (demo account `u_demo` is seeded with sample workflows on first run).
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-// In-memory store
-const store = {
-  workflows: [],
-  runs: [],
-  nextRun: 1
+const STORE_PREFIX = 'procelya-demo-'
+
+// Authoritative in-memory registry for live executions.
+// The simulation writes directly to these run objects, and the polling
+// stream reads from the same objects — guaranteeing WORKFLOW_COMPLETED
+// is always delivered. Final state is still persisted to the user's
+// localStorage store, so runs survive a refresh.
+const liveRuns = new Map()
+
+function currentUserId() {
+  try {
+    const session = JSON.parse(localStorage.getItem('procelya-session') || 'null')
+    if (session && session.id) return session.id
+  } catch { /* ignore */ }
+  return null
 }
 
-// Seed demo workflows
-function seedDemo() {
-  if (store.workflows.length) return
+function storeKey() {
+  const uid = currentUserId()
+  return STORE_PREFIX + (uid || 'anonymous')
+}
 
+function getStore() {
+  let store = null
+  try {
+    store = JSON.parse(localStorage.getItem(storeKey()) || 'null')
+  } catch { store = null }
+  if (!store) {
+    store = { workflows: [], runs: [], nextRun: 1, notifications: [], seeded: false }
+  }
+  // Seed the built-in demo account (u_demo) once so the demo experience is preserved.
+  if (currentUserId() === 'u_demo' && !store.seeded) {
+    seedWorkflows(store)
+    store.seeded = true
+    saveStore(store)
+  }
+  return store
+}
+
+function saveStore(store) {
+  try {
+    localStorage.setItem(storeKey(), JSON.stringify(store))
+  } catch { /* storage full or unavailable — degrade to in-memory only */ }
+}
+
+// ------------------------------------------------------------
+// Seeded demo workflows (demo account only)
+// ------------------------------------------------------------
+function seedWorkflows(store) {
   const now = Date.now()
   store.workflows = [
     {
@@ -76,8 +119,6 @@ function seedDemo() {
     }
   ]
 }
-
-seedDemo()
 
 // Resolve {{trigger.field}} expressions
 function resolveValue(expression, context) {
@@ -205,16 +246,15 @@ function ruleBasedDetect(description) {
   return { workflowName: 'GenericFlow', description, triggerEvent: { type: 'generic.trigger', schema: 'orders' }, steps }
 }
 
-// Admin notifications store for demo mode
-let adminNotifications = []
-
-// Demo API
+// Demo API — every read/mutation is scoped to the current user's store
+// and persisted to localStorage so it survives refresh.
 export const demoApi = {
   health: async () => ({ backend: true, database: true, realtime: true }),
 
   getNotifications: async () => {
     await delay(100)
-    return adminNotifications
+    const store = getStore()
+    return store.notifications || []
   },
 
   detect: async (description) => {
@@ -225,6 +265,7 @@ export const demoApi = {
 
   createWorkflow: async (data) => {
     await delay(200)
+    const store = getStore()
     const wf = {
       _id: 'wf-' + Date.now().toString(36),
       ...data,
@@ -236,21 +277,25 @@ export const demoApi = {
       updatedAt: new Date().toISOString()
     }
     store.workflows.unshift(wf)
+    saveStore(store)
     return wf
   },
 
   listWorkflows: async () => {
     await delay(150)
+    const store = getStore()
     return store.workflows.filter(w => !w.isDeleted)
   },
 
   getWorkflow: async (id) => {
     await delay(100)
+    const store = getStore()
     return store.workflows.find(w => w._id === id)
   },
 
   updateDraft: async (id, data) => {
     await delay(150)
+    const store = getStore()
     const wf = store.workflows.find(w => w._id === id)
     if (wf) {
       if (data.steps) wf.steps = data.steps
@@ -258,24 +303,28 @@ export const demoApi = {
       if (data.description !== undefined) wf.description = data.description
       if (data.workflowName) wf.workflowName = data.workflowName
       wf.updatedAt = new Date().toISOString()
+      saveStore(store)
     }
     return wf
   },
 
   publishWorkflow: async (id) => {
     await delay(200)
+    const store = getStore()
     const wf = store.workflows.find(w => w._id === id)
     if (wf) {
       wf.status = 'published'
       wf.isActive = true
       wf.publishedAt = new Date().toISOString()
       wf.version = (wf.version || 1) + 1
+      saveStore(store)
     }
     return wf
   },
 
   getVersions: async (id) => {
     await delay(100)
+    const store = getStore()
     const wf = store.workflows.find(w => w._id === id)
     return wf ? [wf] : []
   },
@@ -287,6 +336,7 @@ export const demoApi = {
 
   aiEdit: async (id, prompt) => {
     await delay(300)
+    const store = getStore()
     const wf = store.workflows.find(w => w._id === id)
     const text = prompt.toLowerCase()
     const steps = [...(wf?.steps || [])]
@@ -314,6 +364,7 @@ export const demoApi = {
 
   triggerWorkflow: async (id, payload) => {
     await delay(100)
+    const store = getStore()
     const wf = store.workflows.find(w => w._id === id)
     if (!wf) throw new Error('Workflow not found')
     if (!wf.isActive) throw new Error('Workflow is not active. Publish it first.')
@@ -323,7 +374,8 @@ export const demoApi = {
     if (wfName.includes('order')) {
       const now = Date.now()
       const stockType = payload?.stock_type || 'physical'
-      adminNotifications.unshift({
+      if (!store.notifications) store.notifications = []
+      store.notifications.unshift({
         id: 'notif-order-' + Date.now().toString(36),
         type: 'order',
         title: 'Order Confirmed',
@@ -332,7 +384,7 @@ export const demoApi = {
         read: false,
         tag: 'admin'
       })
-      adminNotifications.unshift({
+      store.notifications.unshift({
         id: 'notif-stock-' + Date.now().toString(36),
         type: 'inventory',
         title: 'Inventory Updated',
@@ -354,9 +406,15 @@ export const demoApi = {
       completedAt: null,
       stepResults: [],
       totalDuration: 0,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      events: []
     }
     store.runs.unshift(run)
+    saveStore(store)
+
+    // Register the live run so streaming reads from the same in-memory object
+    // the simulation writes to (guarantees WORKFLOW_COMPLETED is delivered).
+    liveRuns.set(runId, run)
 
     // Execute asynchronously
     executeDemo(wf, run, payload)
@@ -365,12 +423,19 @@ export const demoApi = {
 
   getRun: async (id) => {
     await delay(100)
+    // Prefer the authoritative live object; fall back to the persisted store.
+    const live = liveRuns.get(id)
+    if (live) return live
+    const store = getStore()
     return store.runs.find(r => r._id === id)
   },
 
   listRuns: async () => {
     await delay(150)
-    return store.runs
+    const store = getStore()
+    // Overlay any live runs so the dashboard/executions always see the
+    // authoritative status and totalDuration, not a stale PENDING snapshot.
+    return store.runs.map(r => liveRuns.get(r._id) || r)
   },
 
   listFunctions: async () => {
@@ -383,6 +448,7 @@ export const demoApi = {
 
   listProjects: async () => {
     await delay(150)
+    const store = getStore()
     const projects = [...new Set(store.workflows.map(w => w.projectName))]
     return projects.map(name => ({
       _id: 'proj-' + name,
@@ -397,13 +463,17 @@ export const demoApi = {
   },
 
   streamEvents: (runId, handlers) => {
-    // For demo mode, we use a polling approach since EventSource needs a real server
+    // For demo mode, use polling since EventSource needs a real server.
+    // Always read from the authoritative in-memory run — the simulation
+    // writes to the exact same object, so WORKFLOW_COMPLETED is never missed.
     let lastEventCount = 0
-    const interval = setInterval(async () => {
-      const run = store.runs.find(r => r._id === runId)
-      if (!run) return
+    const interval = setInterval(() => {
+      const run = liveRuns.get(runId)
+      if (!run) {
+        clearInterval(interval)
+        return
+      }
 
-      // Emit any new events
       const events = run.events || []
       for (let i = lastEventCount; i < events.length; i++) {
         const ev = events[i]
@@ -415,16 +485,35 @@ export const demoApi = {
 
       if (run.status === 'COMPLETED' || run.status === 'FAILED') {
         clearInterval(interval)
+        // Drop the live ref once done; the persisted store keeps it.
+        liveRuns.delete(runId)
       }
-    }, 150)
-    return { close: () => clearInterval(interval) }
+    }, 80)
+    return { close: () => { clearInterval(interval); liveRuns.delete(runId) } }
   }
 }
 
+// Copy the authoritative live run's current state into the persisted store.
+// This is essential: the live run object is mutated in place, but the store
+// is re-read from localStorage on each save — so we must sync by id to ensure
+// the final status (COMPLETED/FAILED) and totalDuration reach the dashboard.
+function persistRun(run) {
+  const store = getStore()
+  const idx = store.runs.findIndex(r => r._id === run._id)
+  if (idx !== -1) {
+    store.runs[idx] = { ...run }
+  } else {
+    store.runs.unshift({ ...run })
+  }
+  saveStore(store)
+}
+
 async function executeDemo(wf, run, payload) {
+  // `run` is the authoritative live object (also in liveRuns).
   run.status = 'RUNNING'
   run.startedAt = new Date().toISOString()
   run.events = []
+  persistRun(run)
 
   const context = { trigger: payload }
   const steps = [...wf.steps].sort((a, b) => a.order - b.order)
@@ -433,6 +522,7 @@ async function executeDemo(wf, run, payload) {
   for (const step of steps) {
     const stepStart = Date.now()
     run.events.push({ type: 'STEP_STARTED', data: { runId: run._id, stepId: step.stepId, name: step.name } })
+    persistRun(run)
 
     const conditionMet = evaluateCondition(step.condition, context)
 
@@ -447,6 +537,7 @@ async function executeDemo(wf, run, payload) {
       }
       run.stepResults.push(result)
       run.events.push({ type: 'STEP_COMPLETED', data: { runId: run._id, stepId: step.stepId, status: 'SKIPPED', input: result.input, output: result.output, duration: result.duration } })
+      persistRun(run)
       continue
     }
 
@@ -457,16 +548,19 @@ async function executeDemo(wf, run, payload) {
       run.stepResults.push(result)
       context[step.stepId] = output
       run.events.push({ type: 'STEP_COMPLETED', data: { runId: run._id, stepId: step.stepId, status: 'SUCCESS', input, output, duration: result.duration } })
+      persistRun(run)
     } catch (err) {
       const result = { stepId: step.stepId, status: 'FAILED', input, output: {}, error: err.message, duration: Date.now() - stepStart }
       run.stepResults.push(result)
       run.events.push({ type: 'STEP_COMPLETED', data: { runId: run._id, stepId: step.stepId, status: 'FAILED', input, output: {}, error: err.message, duration: result.duration } })
+      persistRun(run)
       const failure = step.onFailure || { action: 'abort' }
       if (failure.action === 'abort') {
         run.status = 'FAILED'
         run.completedAt = new Date().toISOString()
         run.totalDuration = Date.now() - totalStart
         run.events.push({ type: 'WORKFLOW_COMPLETED', data: { runId: run._id, status: 'FAILED', totalDuration: run.totalDuration } })
+        persistRun(run)
         return
       }
       if (failure.action === 'skip') continue
@@ -477,4 +571,5 @@ async function executeDemo(wf, run, payload) {
   run.completedAt = new Date().toISOString()
   run.totalDuration = Date.now() - totalStart
   run.events.push({ type: 'WORKFLOW_COMPLETED', data: { runId: run._id, status: 'COMPLETED', totalDuration: run.totalDuration } })
+  persistRun(run)
 }

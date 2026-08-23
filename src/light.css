@@ -12,6 +12,11 @@ body.light .toast.error{border-color:#ff6b6b40;border-left-color:#ff6b6b}
 body.light .toast.info{border-color:#7c93ff40;border-left-color:#7c93ff}
 body.light .payload-preview{background:#f8f8f6;border-color:#deded8}
 body.light .payload-preview pre{color:#45464d}
+body.light .payload-section{border-color:#e7e7e1}
+body.light .payload-section-title{color:#191b23}
+body.light .quick-starts{border-color:#e7e7e1}
+body.light .quick-start-btn{background:#f8f8f6;border-color:#deded8;color:#59616f}
+body.light .quick-start-btn:hover,body.light .quick-start-btn.selected{background:#fff3e8;border-color:#ff6a1a66;color:#d85a12}
 body.light .trigger-meta span{background:#f8f8f6;border-color:#e7e7e1;color:#8a8d99}
 body.light .status-icon{background:#f8f8f6;color:#8a8d99}
 body.light .status-icon.done{background:#34d39914;color:#0a8a5c}
