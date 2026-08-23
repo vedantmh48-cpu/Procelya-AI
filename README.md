@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo.png" alt="Procelya AI Logo" width="90" style="border-radius:16px"/>
+<img src="logo.png" alt="Procelya AI Logo" width="90" style="border-radius:16px; background: linear-gradient(135deg, #1a1008, #2a1a0e); padding: 14px; box-shadow: 0 8px 32px rgba(255, 106, 26, 0.35), 0 0 0 1px rgba(255, 106, 26, 0.2);"/>
 
 # ⚡ Procelya AI
 
