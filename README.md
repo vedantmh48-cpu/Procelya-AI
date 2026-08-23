@@ -1,7 +1,6 @@
 <div align="center">
 
-<img src="logo.png" alt="Procelya AI Logo" width="90" style="border-radius:16px; background: linear-gradient(135deg, #1a1008, #2a1a0e); padding: 14px; box-shadow: 0 8px 32px rgba(255, 106, 26, 0.35), 0 0 0 1px rgba(255, 106, 26, 0.2);"/>
-
+<img src="https://capsule-render.vercel.app/api?type=waving&height=220&section=header&text=PROCELYA%20AI&fontSize=50&fontColor=FFFFFF&fontAlignY=40&animation=fadeIn&color=0:FF6B00,50:FFB84D,100:FF6B00" width="100%" alt="PROCELYA AI"/>
 # ⚡ Procelya AI
 
 ### Intelligent Workflow Automation Platform
