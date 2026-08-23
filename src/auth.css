@@ -66,7 +66,7 @@
 .biz-size-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .biz-size-option{background:#191b23;border:1px solid #262832;border-radius:7px;color:#8a8d99;font:600 11px Inter;padding:9px 6px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:5px}
 .biz-size-option:hover{border-color:#ff6a1a66;color:#eef0f4}
-.biz-size-option.selected{background:linear-gradient(105deg,#ff6a1a,#ffb238);border-color:transparent;color:#1a1008;font-weight:700}
+.biz-size-option.selected{background:linear-gradient(105deg,#ff6a1a,#ffb238);border-color:transparent;color:#fff;font-weight:700}
 .biz-textarea{width:100%;background:#191b23;border:1px solid #262832;border-radius:7px;color:#eef0f4;padding:12px 13px;font:13px Inter;outline:none;transition:.2s;resize:vertical;min-height:70px;font-family:Inter,sans-serif}
 .biz-textarea:focus{border-color:#ff6a1a;box-shadow:0 0 0 3px #ff6a1a1f}
 .biz-textarea::placeholder{color:#5c5f6b}
