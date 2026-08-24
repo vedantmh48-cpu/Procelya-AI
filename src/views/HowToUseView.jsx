@@ -74,8 +74,12 @@ export default function HowToUseView({ scrollToSection }) {
   const submitContact = (e) => {
     e.preventDefault()
     if (!contact.name.trim() || !contact.email.trim() || !contact.message.trim()) return
-    const text = `*Procelya AI Contact*%0AName: ${encodeURIComponent(contact.name)}%0AEmail: ${encodeURIComponent(contact.email)}%0ASubject: ${encodeURIComponent(contact.subject || 'N/A')}%0AMessage: ${encodeURIComponent(contact.message)}`
-    window.open(`https://wa.me/${WA_NUMBER}?text=${text}`, '_blank')
+    const text = `*Procelya AI Contact*
+Name: ${contact.name}
+Email: ${contact.email}
+Subject: ${contact.subject || 'N/A'}
+Message: ${contact.message}`
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`, '_blank')
     setContactSent(true)
     setContact({ name: '', email: '', subject: '', message: '' })
     setTimeout(() => setContactSent(false), 4000)
