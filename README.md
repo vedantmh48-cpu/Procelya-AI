@@ -271,3 +271,4 @@ MIT © 2026 Procelya AI
 <div align="center">
   <sub>Built with ⚡ for the future of intelligent automation</sub>
 </div>
+
