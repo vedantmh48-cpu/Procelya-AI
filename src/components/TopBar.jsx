@@ -3,9 +3,10 @@ import { ChevronRight, Moon, Sun, ChevronDown, FolderOpen, RotateCcw, Download, 
 
 const projects = ['sample-flow', 'ecommerce-orders', 'ai-support-agent', 'billing-automation']
 
-export default function TopBar({ theme, onThemeToggle, projectMenu, setProjectMenu, onProjectSelect, activeView, viewLabel, onNavigate, user, onLogout, health }) {
+export default function TopBar({ theme, onThemeToggle, projectMenu, setProjectMenu, onProjectSelect, activeView, viewLabel, onNavigate, user, onLogout, health, onSearch }) {
   const [project, setProject] = useState('sample-flow')
   const [searchOpen, setSearchOpen] = useState(false)
+  const [searchVal, setSearchVal] = useState('')
   const [downloadOpen, setDownloadOpen] = useState(false)
 
   const selectProject = (name) => {
@@ -41,9 +42,20 @@ export default function TopBar({ theme, onThemeToggle, projectMenu, setProjectMe
       {searchOpen && (
         <input
           className="search-input"
-          placeholder={`Search ${viewLabel?.toLowerCase() || 'workflows'}...`}
+          placeholder="Search workflows..."
           autoFocus
-          onBlur={() => setSearchOpen(false)}
+          value={searchVal}
+          onChange={e => setSearchVal(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && searchVal.trim()) {
+              onSearch?.(searchVal.trim())
+              onNavigate('Workflows')
+              setSearchOpen(false)
+              setSearchVal('')
+            }
+            if (e.key === 'Escape') { setSearchOpen(false); setSearchVal('') }
+          }}
+          onBlur={() => { setSearchOpen(false); setSearchVal('') }}
         />
       )}
       <button className="icon-btn" aria-label="Notifications" onClick={() => onNavigate('Notifications')}>

@@ -13,12 +13,19 @@ const actionIcons = {
   operation: Settings2
 }
 
-export default function WorkflowsView({ onNavigate }) {
+export default function WorkflowsView({ onNavigate, globalSearch, onSearchClear }) {
   const [workflows, setWorkflows] = useState([])
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('All')
   const [menuOpen, setMenuOpen] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (globalSearch) {
+      setSearch(globalSearch)
+      onSearchClear?.()
+    }
+  }, [globalSearch])
 
   useEffect(() => {
     const load = async () => {
@@ -35,7 +42,12 @@ export default function WorkflowsView({ onNavigate }) {
   }, [])
 
   const filtered = workflows.filter(w => {
-    const matchesSearch = (w.workflowName || '').toLowerCase().includes(search.toLowerCase())
+    const q = search.toLowerCase()
+    const matchesSearch = !q ||
+      (w.workflowName || '').toLowerCase().includes(q) ||
+      (w.description || '').toLowerCase().includes(q) ||
+      (w.triggerEvent?.type || '').toLowerCase().includes(q) ||
+      (w.projectName || '').toLowerCase().includes(q)
     const matchesFilter = filter === 'All' || w.status === filter.toLowerCase()
     return matchesSearch && matchesFilter
   })

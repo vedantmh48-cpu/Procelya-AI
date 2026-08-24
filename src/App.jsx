@@ -63,6 +63,7 @@ export default function App() {
   const [projectMenu, setProjectMenu] = useState(false)
   const [userMenu, setUserMenu] = useState(false)
   const [toast, setToast] = useState(null)
+  const [globalSearch, setGlobalSearch] = useState('')
   const [payload, setPayload] = useState({ orderId: 'ORD-2026-014', customerId: 'CUS-1108', vendorId: 'VND-001', vendorName: 'Acme Supplies', stockType: 'physical', quantity: 1, deliveryMethod: 'standard', amount: 2499, currency: 'INR', paymentType: 'card', paymentStatus: 'received' })
   const toastTimer = useRef(null)
   const eventSourceRef = useRef(null)
@@ -268,11 +269,12 @@ export default function App() {
   }
 
   const handleDownloadJson = () => {
+    if (!workflow) return
     const blob = new Blob([JSON.stringify(workflow, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'workflow.json'
+    a.download = `${(workflow.workflowName || 'workflow').replace(/\s+/g, '_')}.json`
     a.click()
     URL.revokeObjectURL(url)
     showToast('Workflow JSON downloaded')
@@ -451,6 +453,7 @@ export default function App() {
         user={user}
         onLogout={handleLogout}
         health={health}
+        onSearch={(q) => { setGlobalSearch(q) }}
       />
 
       {/* Mobile-only app bar */}
@@ -497,6 +500,8 @@ export default function App() {
               onNavigate={navigate}
               onViewLogs={scrollLogs}
               user={user}
+              globalSearch={globalSearch}
+              onSearchClear={() => setGlobalSearch('')}
             />}
       </div>
     </main>
