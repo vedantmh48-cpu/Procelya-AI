@@ -66,9 +66,8 @@ export default function BusinessAuthPage() {
 
   const validateStep2 = () => {
     if (!form.country) return 'Please select your country'
-    if (form.phone && !/^[+\d][\d\s-]{6,}$/.test(form.phone.trim())) {
-      return 'Please enter a valid phone number'
-    }
+    if (!form.phone.trim()) return 'Please enter your phone number'
+    if (!/^[+\d][\d\s-]{6,14}$/.test(form.phone.trim())) return 'Please enter a valid phone number (e.g. +91 98765 43210)'
     return ''
   }
 
@@ -238,7 +237,7 @@ export default function BusinessAuthPage() {
               </div>
 
               <div className="auth-field">
-                <label>Phone Number (optional)</label>
+                <label>Phone Number</label>
                 <div className="auth-password-wrap">
                   <input
                     type="tel"
