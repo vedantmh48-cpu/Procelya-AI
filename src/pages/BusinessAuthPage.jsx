@@ -244,6 +244,7 @@ export default function BusinessAuthPage() {
                     placeholder="+91 98765 43210"
                     value={form.phone}
                     onChange={(e) => update('phone', e.target.value)}
+                    maxLength={15}
                   />
                   <span className="auth-password-toggle"><Phone size={14} /></span>
                 </div>
