@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LayoutDashboard, Workflow, Network, PlaySquare, Braces, FolderKanban, Settings, KeyRound, Bell, ChevronDown, User, LogOut } from 'lucide-react'
+import { LayoutDashboard, Workflow, Network, PlaySquare, Braces, FolderKanban, Settings, KeyRound, Bell, ChevronDown, User, LogOut, BookOpen, HelpCircle } from 'lucide-react'
 import logo from '../../logo.png'
 
 const nav = [
@@ -11,7 +11,9 @@ const nav = [
   [FolderKanban, 'Projects'],
   [Bell, 'Notifications'],
   [Settings, 'Settings'],
-  [KeyRound, 'API Keys']
+  [KeyRound, 'API Keys'],
+  [BookOpen, 'How to Use'],
+  [HelpCircle, 'Help']
 ]
 
 export default function Sidebar({ activeNav, onNav, onUserAction, userMenu, setUserMenu, user, health }) {

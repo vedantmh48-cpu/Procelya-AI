@@ -11,6 +11,7 @@ import ProjectsView from './views/ProjectsView'
 import SettingsView from './views/SettingsView'
 import APIKeysView from './views/APIKeysView'
 import NotificationsView from './views/NotificationsView'
+import HowToUseView from './views/HowToUseView'
 import AuthPage from './pages/AuthPage'
 import BusinessAuthPage from './pages/BusinessAuthPage'
 import { AuthContext } from './context/AuthContext'
@@ -28,7 +29,9 @@ const VIEWS = {
   'Projects': ProjectsView,
   'Settings': SettingsView,
   'API Keys': APIKeysView,
-  'Notifications': NotificationsView
+  'Notifications': NotificationsView,
+  'How to Use': HowToUseView,
+  'Help': HowToUseView
 }
 
 const VIEW_LABELS = {
@@ -40,7 +43,9 @@ const VIEW_LABELS = {
   'Projects': 'Project Workspace',
   'Settings': 'Preferences',
   'API Keys': 'Access Management',
-  'Notifications': 'Notification Center'
+  'Notifications': 'Notification Center',
+  'How to Use': 'How to Use',
+  'Help': 'Help & Contact'
 }
 
 export default function App() {
@@ -103,6 +108,9 @@ export default function App() {
 
   const handleNav = (label) => {
     setActiveNav(label)
+    if (label === 'Help') {
+      setTimeout(() => document.getElementById('help-feedback')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120)
+    }
     if (label !== 'Dashboard' && label !== 'Workflow Builder') {
       showToast(`${label} view opened`, 'info')
     }
